@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 
 #include "Morphology.hpp"
 
@@ -15,13 +14,39 @@ void printMatrix(const Matrix& matrix)
         std::cout << '\n';
     }
 }
+
 bool matricesEqual(const Matrix& a, const Matrix& b)
 {
     return a == b;
 }
+
+Matrix createSquareKernel()
+{
+    return
+    {
+        {1,1,1,1,1},
+        {1,1,1,1,1},
+        {1,1,1,1,1},
+        {1,1,1,1,1},
+        {1,1,1,1,1}
+    };
+}
+
+Matrix createRoundedKernel()
+{
+    return
+    {
+        {0,0,1,0,0},
+        {0,1,1,1,0},
+        {1,1,1,1,1},
+        {0,1,1,1,0},
+        {0,0,1,0,0}
+    };
+}
+
 bool testSinglePixel()
 {
-    Morphology morphology;
+    Morphology morphology(createSquareKernel());
 
     Matrix input =
     {
@@ -45,13 +70,14 @@ bool testSinglePixel()
         {0,0,0,0,0,0,0}
     };
 
-    Matrix result = morphology.dilate5x5(input);
+    Matrix result = morphology.dilate(input);
 
     return matricesEqual(result, expected);
 }
+
 bool testBoundaryPixel()
 {
-    Morphology morphology;
+    Morphology morphology(createSquareKernel());
 
     Matrix input =
     {
@@ -71,13 +97,14 @@ bool testBoundaryPixel()
         {0,0,0,0,0}
     };
 
-    Matrix result = morphology.dilate5x5(input);
+    Matrix result = morphology.dilate(input);
 
     return matricesEqual(result, expected);
 }
+
 bool testEmptyForeground()
 {
-    Morphology morphology;
+    Morphology morphology(createSquareKernel());
 
     Matrix input =
     {
@@ -90,14 +117,37 @@ bool testEmptyForeground()
 
     Matrix expected = input;
 
-    Matrix result = morphology.dilate5x5(input);
+    Matrix result = morphology.dilate(input);
 
     return matricesEqual(result, expected);
 }
+
+bool testDifferentKernels()
+{
+    Matrix input =
+    {
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,1,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0}
+    };
+
+    Morphology morphology(createSquareKernel());
+
+    Matrix squareResult = morphology.dilate(input);
+
+    morphology.setKernel(createRoundedKernel());
+
+    Matrix roundedResult = morphology.dilate(input);
+
+    return squareResult != roundedResult;
+}
+
 int main()
 {
-    Morphology morphology;
-
     Matrix image =
     {
         {0,0,0,0,0,0,0,0,0},
@@ -111,13 +161,25 @@ int main()
         {0,0,0,0,0,0,0,0,0}
     };
 
+    Matrix squareKernel = createSquareKernel();
+    Matrix roundedKernel = createRoundedKernel();
+
+    Morphology morphology(squareKernel);
+
     std::cout << "Original image:\n";
     printMatrix(image);
 
-    Matrix result = morphology.dilate5x5(image);
+    Matrix dilation1 = morphology.dilate(image);
 
-    std::cout << "\nDilated image with 5x5 structuring element:\n";
-    printMatrix(result);
+    std::cout << "\nDilation 1 - square kernel:\n";
+    printMatrix(dilation1);
+
+    morphology.setKernel(roundedKernel);
+
+    Matrix dilation2 = morphology.dilate(image);
+
+    std::cout << "\nDilation 2 - rounded kernel:\n";
+    printMatrix(dilation2);
 
     std::cout << "\nRunning tests:\n";
 
@@ -134,6 +196,11 @@ int main()
     std::cout
         << "Test 3 - empty foreground: "
         << (testEmptyForeground() ? "PASS" : "FAIL")
+        << '\n';
+
+    std::cout
+        << "Test 4 - different kernels: "
+        << (testDifferentKernels() ? "PASS" : "FAIL")
         << '\n';
 
     return 0;

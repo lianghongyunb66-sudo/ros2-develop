@@ -1,6 +1,16 @@
 #include "Morphology.hpp"
 
-Matrix Morphology::dilate5x5(const Matrix& image) const
+Morphology::Morphology(const Matrix& kernel)
+    : kernel_(kernel)
+{
+}
+
+void Morphology::setKernel(const Matrix& kernel)
+{
+    kernel_ = kernel;
+}
+
+Matrix Morphology::dilate(const Matrix& image) const
 {
     if (image.empty() || image[0].empty())
     {
@@ -10,9 +20,13 @@ Matrix Morphology::dilate5x5(const Matrix& image) const
     const int rows = static_cast<int>(image.size());
     const int cols = static_cast<int>(image[0].size());
 
-    Matrix result(rows, std::vector<int>(cols, 0));
+    const int kernelRows = static_cast<int>(kernel_.size());
+    const int kernelCols = static_cast<int>(kernel_[0].size());
 
-    constexpr int radius = 2;
+    const int centerRow = kernelRows / 2;
+    const int centerCol = kernelCols / 2;
+
+    Matrix result(rows, std::vector<int>(cols, 0));
 
     for (int row = 0; row < rows; ++row)
     {
@@ -23,12 +37,17 @@ Matrix Morphology::dilate5x5(const Matrix& image) const
                 continue;
             }
 
-            for (int dr = -radius; dr <= radius; ++dr)
+            for (int kr = 0; kr < kernelRows; ++kr)
             {
-                for (int dc = -radius; dc <= radius; ++dc)
+                for (int kc = 0; kc < kernelCols; ++kc)
                 {
-                    const int newRow = row + dr;
-                    const int newCol = col + dc;
+                    if (kernel_[kr][kc] == 0)
+                    {
+                        continue;
+                    }
+
+                    const int newRow = row + kr - centerRow;
+                    const int newCol = col + kc - centerCol;
 
                     if (newRow >= 0 && newRow < rows &&
                         newCol >= 0 && newCol < cols)

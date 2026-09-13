@@ -7,5 +7,12 @@ using Matrix = std::vector<std::vector<int>>;
 class Morphology
 {
 public:
-    Matrix dilate5x5(const Matrix& image) const;
+    explicit Morphology(const Matrix& kernel);
+
+    void setKernel(const Matrix& kernel);
+
+    Matrix dilate(const Matrix& image) const;
+
+private:
+    Matrix kernel_;
 };
