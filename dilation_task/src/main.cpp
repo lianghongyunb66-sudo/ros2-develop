@@ -146,6 +146,37 @@ bool testDifferentKernels()
     return squareResult != roundedResult;
 }
 
+bool testErosion()
+{
+    Matrix input =
+    {
+        {0,0,0,0,0,0,0},
+        {0,1,1,1,1,1,0},
+        {0,1,1,1,1,1,0},
+        {0,1,1,1,1,1,0},
+        {0,1,1,1,1,1,0},
+        {0,1,1,1,1,1,0},
+        {0,0,0,0,0,0,0}
+    };
+
+    Matrix expected =
+    {
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,1,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0}
+    };
+
+    Morphology morphology(createSquareKernel());
+
+    Matrix result = morphology.erode(input);
+
+    return matricesEqual(result, expected);
+}
+
 int main()
 {
     Matrix image =
@@ -181,6 +212,13 @@ int main()
     std::cout << "\nDilation 2 - rounded kernel:\n";
     printMatrix(dilation2);
 
+    morphology.setKernel(squareKernel);
+
+Matrix erosion = morphology.erode(image);
+
+std::cout << "\nErosion - square kernel:\n";
+printMatrix(erosion);
+
     std::cout << "\nRunning tests:\n";
 
     std::cout
@@ -202,6 +240,11 @@ int main()
         << "Test 4 - different kernels: "
         << (testDifferentKernels() ? "PASS" : "FAIL")
         << '\n';
+
+        std::cout
+    << "Test 5 - erosion: "
+    << (testErosion() ? "PASS" : "FAIL")
+    << '\n';
 
     return 0;
 }

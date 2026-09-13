@@ -61,3 +61,56 @@ Matrix Morphology::dilate(const Matrix& image) const
 
     return result;
 }
+Matrix Morphology::erode(const Matrix& image) const
+{
+    if (image.empty() || image[0].empty())
+    {
+        return {};
+    }
+
+    const int rows = static_cast<int>(image.size());
+    const int cols = static_cast<int>(image[0].size());
+
+    const int kernelRows = static_cast<int>(kernel_.size());
+    const int kernelCols = static_cast<int>(kernel_[0].size());
+
+    const int centerRow = kernelRows / 2;
+    const int centerCol = kernelCols / 2;
+
+    Matrix result(rows, std::vector<int>(cols, 0));
+
+    for (int row = 0; row < rows; ++row)
+    {
+        for (int col = 0; col < cols; ++col)
+        {
+            bool keepForeground = true;
+
+            for (int kr = 0; kr < kernelRows && keepForeground; ++kr)
+            {
+                for (int kc = 0; kc < kernelCols; ++kc)
+                {
+                    if (kernel_[kr][kc] == 0)
+                    {
+                        continue;
+                    }
+
+                    const int imageRow = row + kr - centerRow;
+                    const int imageCol = col + kc - centerCol;
+
+                    if (imageRow < 0 || imageRow >= rows ||
+                        imageCol < 0 || imageCol >= cols ||
+                        image[imageRow][imageCol] == 0)
+                    {
+                        keepForeground = false;
+                        break;
+                    }
+                }
+            }
+
+            result[row][col] = keepForeground ? 1 : 0;
+        }
+    }
+
+    return result;
+}
+

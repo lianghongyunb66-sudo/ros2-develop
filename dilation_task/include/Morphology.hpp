@@ -13,6 +13,8 @@ public:
 
     Matrix dilate(const Matrix& image) const;
 
+    Matrix erode(const Matrix& image) const;
+
 private:
     Matrix kernel_;
 };
