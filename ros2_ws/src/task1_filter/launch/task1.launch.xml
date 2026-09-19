@@ -1,0 +1,17 @@
+<launch>
+
+  <node
+    pkg="task1_filter"
+    exec="signal_generator"
+    name="signal_generator"
+    output="screen"
+  />
+
+  <node
+    pkg="task1_filter"
+    exec="signal_filter"
+    name="signal_filter"
+    output="screen"
+  />
+
+</launch>
