@@ -1,0 +1,49 @@
+<launch>
+
+  <!--
+      复用Task 2已经完成的motor_simulator，
+      只对Topic名称进行remap。
+  -->
+  <node
+    pkg="motor_control"
+    exec="motor_simulator"
+    name="motor_simulator"
+    output="screen"
+  >
+
+    <remap
+      from="/task2/torque_cmd"
+      to="/task3/torque_cmd"
+    />
+
+    <remap
+      from="/task2/omega"
+      to="/task3/omega"
+    />
+
+    <remap
+      from="/task2/theta"
+      to="/task3/theta"
+    />
+
+  </node>
+
+
+  <!-- 目标速度节点 -->
+  <node
+    pkg="motor_control"
+    exec="speed_target"
+    name="speed_target"
+    output="screen"
+  />
+
+
+  <!-- PID节点 -->
+  <node
+    pkg="motor_control"
+    exec="pid_controller"
+    name="pid_controller"
+    output="screen"
+  />
+
+</launch>

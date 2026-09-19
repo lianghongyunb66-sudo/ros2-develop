@@ -22,9 +22,10 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
 
-# =====================================
-# Task 2: Motor Simulator
-# =====================================
+# ==========================================
+# Task 2
+# Motor Simulator
+# ==========================================
 
 add_executable(
   motor_simulator
@@ -38,9 +39,10 @@ ament_target_dependencies(
 )
 
 
-# =====================================
-# Task 2: Torque Test Input
-# =====================================
+# ==========================================
+# Task 2
+# Torque Test Input
+# ==========================================
 
 add_executable(
   torque_test_input
@@ -54,24 +56,57 @@ ament_target_dependencies(
 )
 
 
-# =====================================
-# Install executables
-# =====================================
+# ==========================================
+# Task 3
+# Speed Target
+# ==========================================
+
+add_executable(
+  speed_target
+  src/speed_target.cpp
+)
+
+ament_target_dependencies(
+  speed_target
+  rclcpp
+  std_msgs
+)
+
+
+# ==========================================
+# Task 3
+# PID Controller
+# ==========================================
+
+add_executable(
+  pid_controller
+  src/pid_controller.cpp
+)
+
+ament_target_dependencies(
+  pid_controller
+  rclcpp
+  std_msgs
+)
+
+
+# ==========================================
+# Install
+# ==========================================
 
 install(
   TARGETS
     motor_simulator
     torque_test_input
+    speed_target
+    pid_controller
 
   DESTINATION
     lib/${PROJECT_NAME}
 )
 
 
-# =====================================
 # Install launch files
-# =====================================
-
 install(
   DIRECTORY
     launch
