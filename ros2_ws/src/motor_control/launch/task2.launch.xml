@@ -1,0 +1,17 @@
+<launch>
+
+  <node
+    pkg="motor_control"
+    exec="motor_simulator"
+    name="motor_simulator"
+    output="screen"
+  />
+
+  <node
+    pkg="motor_control"
+    exec="torque_test_input"
+    name="torque_test_input"
+    output="screen"
+  />
+
+</launch>
