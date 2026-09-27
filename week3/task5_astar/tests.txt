@@ -1,0 +1,11 @@
+[PASS] empty_map
+[PASS] same_point
+[PASS] unreachable
+[PASS] no_diagonal_shortcut
+[PASS] single_row
+[PASS] detour
+[PASS] invalid_input
+[PASS] fixed_demo_cost_36
+[PASS] deterministic_replay
+[PASS] 200_random_maps_against_bfs
+PASS: 10/10 test groups; random group includes 200 BFS comparisons.

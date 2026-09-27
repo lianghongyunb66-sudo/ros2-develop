@@ -1,0 +1,7 @@
+Implementation: C++17 / OpenCV 4.6.0
+A* is implemented in astar.cpp; OpenCV only renders the result.
+cost=-1 means unreachable. Playback speed is artificial.
+success: cost=36, expanded=139, path_nodes=37
+success_video_written=true
+no_path: cost=-1, expanded=74, path_nodes=0
+same_point: cost=0, expanded=1, path_nodes=1

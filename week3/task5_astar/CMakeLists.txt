@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 3.16)
+project(task5_astar_cpp LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_library(astar_lib astar.cpp)
+target_include_directories(astar_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_options(astar_lib PRIVATE -Wall -Wextra -Wpedantic)
+
+add_executable(test_astar test_astar.cpp)
+target_link_libraries(test_astar PRIVATE astar_lib)
+target_compile_options(test_astar PRIVATE -Wall -Wextra -Wpedantic)
+enable_testing()
+add_test(NAME astar_tests COMMAND test_astar)
+
+# Algorithm and tests do not depend on OpenCV. -DBUILD_DEMO=OFF builds tests alone.
+option(BUILD_DEMO "Build OpenCV visualisation" ON)
+if(BUILD_DEMO)
+  find_package(OpenCV 4 REQUIRED COMPONENTS core imgproc imgcodecs videoio)
+  add_executable(astar_demo demo.cpp)
+  target_include_directories(astar_demo PRIVATE ${OpenCV_INCLUDE_DIRS})
+  target_link_libraries(astar_demo PRIVATE astar_lib ${OpenCV_LIBS})
+  target_compile_options(astar_demo PRIVATE -Wall -Wextra -Wpedantic)
+endif()
